@@ -3,14 +3,14 @@ import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 
 class ApiResponse {
-  String? answer;
-  bool? forced;
-  String? image;
+  String answer;
+  bool forced;
+  String image;
 
   ApiResponse({
-    this.answer,
-    this.forced,
-    this.image,
+    required this.answer,
+    required this.forced,
+    required this.image,
   });
 }
 

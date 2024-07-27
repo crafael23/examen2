@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 
 import 'api_response.dart';
 
@@ -37,9 +36,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController textFieldTextController = TextEditingController();
 
-  late ApiResponse respuesta = ApiResponse();
+  ApiResponse respuesta = ApiResponse(answer: '', forced: false, image: '');
+
+  String Url = "";
 
   String text = '';
+
+  bool isLoading = true;
 
   void onPressed() {
     print(textFieldTextController.text);
@@ -50,7 +53,17 @@ class _MyHomePageState extends State<MyHomePage> {
       final provider = ApiResponseProvider();
 
       provider.getAnswer().then((value) {
-        respuesta = value;
+        respuesta.answer = value.answer;
+        respuesta.forced = value.forced;
+        respuesta.image = value.image;
+
+        Url = value.image;
+
+        print(value.answer);
+        print(value.forced);
+        print(value.image);
+        isLoading = false;
+        setState(() {});
       });
     } else {
       textFieldTextController.clear();
@@ -71,10 +84,13 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
-          const SizedBox(
-            child: Center(
-              child: Text(),
-            ),
+          Text(respuesta.image),
+          SizedBox(
+            child: isLoading
+                ? const CircularProgressIndicator()
+                : Image(
+                    image: NetworkImage(respuesta.image),
+                  ),
           ),
           Text(text),
           TextFieldWidgetCustom(
@@ -109,6 +125,7 @@ class _TextFieldWidgetCustomState extends State<TextFieldWidgetCustom> {
       child: TextField(
         controller: widget.textFieldTextController,
         decoration: InputDecoration(
+            label: const Text('Escribe una pregunta'),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
             ),
